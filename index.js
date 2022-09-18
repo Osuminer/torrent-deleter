@@ -1,7 +1,6 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const fs = require("fs")
-// const Date = require("date")
 
 const app = express()
 const PORT = 3000
@@ -11,9 +10,9 @@ const logFile = "log.txt"
 app.use(bodyParser.json())
 app.post("/sonarr", (req, res) => {
     let upgradedEpisode = req.body
-    var episode_to_delete = upgradedEpisode["deletedFiles"][0].sceneName
 
     try {
+        var episode_to_delete = upgradedEpisode["deletedFiles"][0].sceneName
         deleteFile(episode_to_delete)
     } catch (err) {
         console.log(err)
