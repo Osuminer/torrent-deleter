@@ -1,6 +1,7 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const fs = require("fs")
+const glob = require("glob")
 
 const app = express()
 const PORT = 3000
@@ -26,10 +27,11 @@ app.listen(PORT, () => console.log("Server running on port", PORT))
 
 
 function deleteFile(mediaTitle) {
-    const filePath = "/media/downloading/"
+    const filePath = "/media/downloading"
+
 
     try {
-        fs.unlinkSync(filePath + mediaTitle)
+        fs.unlinkSync(getFileExtension(filePath, mediaTitle))
         console.log(mediaTitle + " was successfully removed")
         writeLog(mediaTitle)
 
@@ -39,6 +41,16 @@ function deleteFile(mediaTitle) {
 
         return false
     }
+}
+
+function getFileExtension (filePath, mediaTitle) {
+    glob(filePath + "/**/" + mediaTitle + ".*", (err, newFile) => {
+        if(err) {
+            console.log(err)
+        }
+    
+        console.log(newFile.paths[0])
+    })
 }
 
 function writeLog (mediaTitle) {
