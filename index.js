@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const fs = require("fs")
 const glob = require("glob")
+const str_replace = require("str_replace")
 
 const app = express()
 const PORT = 3000
@@ -44,12 +45,16 @@ function deleteFile(mediaTitle) {
 }
 
 function getFileExtension (filePath, mediaTitle) {
+
+    mediaTitle = str_replace('[', '*', mediaTitle);
+    mediaTitle = str_replace(']', '*', mediaTitle);
+
     glob(filePath + "/**/" + mediaTitle + ".*", (err, newFile) => {
         if(err) {
             console.log(err)
         }
     
-        console.log(newFile.paths[0])
+        return newFile.paths[0]
     })
 }
 
