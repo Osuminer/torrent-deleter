@@ -30,11 +30,17 @@ app.listen(PORT, () => console.log("Server running on port", PORT))
 function deleteFile(mediaTitle) {
     const filePath = "/media/downloading"
 
-
     try {
-        fs.unlinkSync(getFileExtension(filePath, mediaTitle))
-        console.log(mediaTitle + " was successfully removed")
-        writeLog(mediaTitle)
+        let fullPath = getFileExtension(filePath, mediaTitle)
+
+        fs.unlink(fullPath, (err => {
+            if(err) {
+                console.log(err)
+            } else {
+                console.log("\nDeletion of " + mediaTitle + " was successful")
+                writeLog(mediaTitle)
+            }
+        }))
 
         return true
     } catch (err) {
@@ -45,17 +51,12 @@ function deleteFile(mediaTitle) {
 }
 
 function getFileExtension (filePath, mediaTitle) {
-
     mediaTitle = str_replace('[', '*', mediaTitle);
     mediaTitle = str_replace(']', '*', mediaTitle);
 
-    glob(filePath + "/**/" + mediaTitle + ".*", (err, newFile) => {
-        if(err) {
-            console.log(err)
-        }
+    let search = glob.sync(filePath + "/**/" + mediaTitle + ".*")
     
-        return newFile.paths[0]
-    })
+    return search.paths[0]
 }
 
 function writeLog (mediaTitle) {
